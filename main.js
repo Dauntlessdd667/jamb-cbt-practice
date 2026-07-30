@@ -509,6 +509,10 @@ function showSplash(candidate) {
   document.getElementById("splash-reg").textContent = candidate.regNumber;
   document.getElementById("splash-centre").textContent =
     candidate.centre || "CBT SIMULATOR";
+  document.getElementById("header-candidate").textContent =
+    candidate.name.toUpperCase();
+  document.getElementById("header-centre").textContent =
+    candidate.centre || "CBT SIMULATOR";
   loginScreen.style.opacity = "0";
   setTimeout(() => {
     loginScreen.style.display = "none";
@@ -591,6 +595,11 @@ function startExam() {
   setTimeout(() => {
     document.getElementById("splash").style.display = "none";
     document.getElementById("header").style.display = "flex";
+    document.getElementById("header-candidate").textContent = (
+      currentCandidate?.name || "CANDIDATE"
+    ).toUpperCase();
+    document.getElementById("header-centre").textContent =
+      currentCandidate?.centre || "CBT SIMULATOR";
     document.getElementById("subheader").style.display = "flex";
     document.getElementById("main").style.display = "grid";
     examStarted = true;
@@ -758,6 +767,16 @@ function hideConfirm() {
   document.getElementById("confirm-overlay").classList.remove("show");
 }
 
+function getPerformanceMessage(percent) {
+  if (percent >= 75)
+    return "Excellent performance. You are ready for a strong UTME score.";
+  if (percent >= 50)
+    return "Good effort. You have a solid foundation and can improve further.";
+  if (percent >= 30)
+    return "Fair performance. Keep practicing to build confidence.";
+  return "You are still building momentum. Keep revising and try again.";
+}
+
 function submitExam() {
   clearInterval(timerInterval);
   hideConfirm();
@@ -773,6 +792,8 @@ function submitExam() {
   const total = Math.round(correct * 2.5);
   const percent = Math.round((correct / 60) * 100);
 
+  document.getElementById("result-message").textContent =
+    getPerformanceMessage(percent);
   document.getElementById("r-total").textContent = total;
   document.getElementById("r-correct").textContent = correct;
   document.getElementById("r-wrong").textContent = wrong;
@@ -789,7 +810,29 @@ function reviewAnswers() {
   renderQuestion();
 }
 
+function handleKeyboardInput(event) {
+  if (!examStarted || reviewing) return;
+
+  if (event.key >= "1" && event.key <= "4") {
+    event.preventDefault();
+    const optionIndex = Number(event.key) - 1;
+    if (optionIndex < questions[currentQ].options.length) {
+      selectAnswer(optionIndex);
+    }
+  } else if (event.key === "ArrowRight" || event.key === " ") {
+    event.preventDefault();
+    nextQuestion();
+  } else if (event.key === "ArrowLeft") {
+    event.preventDefault();
+    prevQuestion();
+  } else if (event.key.toLowerCase() === "f") {
+    event.preventDefault();
+    toggleFlag();
+  }
+}
+
 // Init
 loadUsers();
 setAuthMode("login");
+document.addEventListener("keydown", handleKeyboardInput);
 updateStats();

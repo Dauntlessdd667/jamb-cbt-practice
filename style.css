@@ -94,7 +94,37 @@ body {
   font-size: 0.75rem;
   color: #888;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
+}
+
+.login-badge {
+  display: inline-block;
+  margin: 0 auto 10px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #eef5ff;
+  color: var(--jamb-blue);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.login-highlights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+
+.login-highlights span {
+  background: #f6f9fe;
+  border: 1px solid #dfe7f4;
+  border-radius: 999px;
+  padding: 5px 8px;
+  font-size: 0.67rem;
+  color: #567;
 }
 
 .form-group {
@@ -348,6 +378,40 @@ body {
   letter-spacing: 2px;
 }
 
+.header-meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.header-meta-item {
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 4px 8px;
+  border-radius: 6px;
+  min-width: 130px;
+}
+
+.meta-label {
+  font-size: 0.6rem;
+  color: #90c8ff;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.header-meta-item span:last-child {
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+.header-subject-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 #header .h-subject {
   font-size: 0.82rem;
   background: rgba(255, 255, 255, 0.15);
@@ -472,6 +536,16 @@ body {
   padding: 20px;
   margin-bottom: 16px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.question-instruction {
+  background: #eef5ff;
+  border: 1px solid #d5e4fb;
+  border-radius: 6px;
+  color: #37639a;
+  padding: 10px 12px;
+  font-size: 0.8rem;
+  margin-bottom: 12px;
 }
 
 .question-text {
@@ -738,8 +812,15 @@ body {
   color: #333;
   font-size: 1rem;
   font-weight: 400;
-  margin-bottom: 24px;
+  margin-bottom: 8px;
   color: #777;
+}
+
+.result-message {
+  color: var(--jamb-blue);
+  font-size: 0.84rem;
+  font-weight: 600;
+  margin-bottom: 18px;
 }
 
 .score-circle {
@@ -893,6 +974,19 @@ body {
   }
   #sidebar {
     display: none;
+  }
+  #header {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 10px 12px;
+    gap: 8px;
+  }
+  .header-meta {
+    width: 100%;
+  }
+  .header-subject-wrap {
+    width: 100%;
+    justify-content: space-between;
   }
   .action-bar {
     gap: 7px;

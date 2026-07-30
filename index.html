@@ -16,9 +16,15 @@
         UNIFIED TERTIARY MATRICULATION EXAMINATION — CBT
       </div>
       <div class="login-card">
+        <div class="login-badge">UTME CANDIDATE PORTAL</div>
         <h3 id="auth-title">Candidate Login</h3>
         <div class="login-desc" id="auth-desc">
-          Enter your details to continue.
+          Enter your registration details to begin your practice CBT session.
+        </div>
+        <div class="login-highlights">
+          <span>✓ Official-style interface</span>
+          <span>✓ 60 timed questions</span>
+          <span>✓ Review &amp; flag options</span>
         </div>
         <div class="auth-toggle" role="tablist">
           <button
@@ -130,11 +136,25 @@
     </div>
     <div id="header" style="display: none">
       <div class="h-logo">JAMB CBT</div>
-      <div class="h-subject" id="current-subject-header">ENGLISH LANGUAGE</div>
-      <div id="timer-box">
-        <div>
-          <div class="t-label">TIME LEFT</div>
-          <div id="timer-display">02:00:00</div>
+      <div class="header-meta">
+        <div class="header-meta-item">
+          <span class="meta-label">Candidate</span>
+          <span id="header-candidate">—</span>
+        </div>
+        <div class="header-meta-item">
+          <span class="meta-label">Centre</span>
+          <span id="header-centre">—</span>
+        </div>
+      </div>
+      <div class="header-subject-wrap">
+        <div class="h-subject" id="current-subject-header">
+          ENGLISH LANGUAGE
+        </div>
+        <div id="timer-box">
+          <div>
+            <div class="t-label">TIME LEFT</div>
+            <div id="timer-display">02:00:00</div>
+          </div>
         </div>
       </div>
     </div>
@@ -155,6 +175,10 @@
           <div class="q-subject-badge" id="q-subject-badge">
             English Language
           </div>
+        </div>
+        <div class="question-instruction">
+          Select the best option. You may use 1–4 on your keyboard or click an
+          answer.
         </div>
         <div class="question-card">
           <div class="question-text" id="question-text">Loading...</div>
