@@ -1,156 +1,255 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JAMB CBT Simulator</title>
-<link rel="stylesheet" href="style.css" />
-</head>
-<body>
-<div id="login-screen">
-  <div class="login-logo">
-    <h1>JAMB</h1>
-    <p>JOINT ADMISSIONS AND MATRICULATION BOARD</p>
-  </div>
-  <div class="login-subtitle">UNIFIED TERTIARY MATRICULATION EXAMINATION — CBT</div>
-  <div class="login-card">
-    <h3>Candidate Login</h3>
-    <div class="login-desc">Enter your JAMB Registration Number and Date of Birth to proceed</div>
-    <div class="login-error" id="login-error">⚠ Invalid Registration Number or Date of Birth. Please try again.</div>
-    <div class="form-group">
-      <label>Registration Number</label>
-      <input type="text" id="reg-input" placeholder="e.g. 21/7654321EF" maxlength="14" />
-    </div>
-    <div class="form-group">
-      <label>Date of Birth</label>
-      <input type="date" id="dob-input" />
-    </div>
-    <div class="form-group">
-      <label>Exam Centre</label>
-      <input type="text" id="centre-input" placeholder="e.g. Covenant CBT Centre, Lagos" />
-    </div>
-    <button class="login-btn" onclick="doLogin()">LOGIN →</button>
-    <div class="login-hint">
-      <strong>Demo credentials:</strong><br>
-      Reg No: <strong>21/7654321EF</strong> &nbsp;|&nbsp; DOB: <strong>2006-01-15</strong>
-    </div>
-  </div>
-  <div class="login-footer">JAMB CBT Simulator — For Practice Purposes Only</div>
-</div>
-<div id="splash" style="display:none">
-  <div class="logo-box">
-    <h1>JAMB</h1>
-    <p>JOINT ADMISSIONS AND MATRICULATION BOARD</p>
-  </div>
-  <h2>UNIFIED TERTIARY MATRICULATION EXAMINATION</h2>
-  <h3>Computer Based Test (CBT)</h3>
-  <div class="candidate-info">
-    <div><span>Candidate Name:</span><span>DEMO CANDIDATE</span></div>
-    <div><span>Registration No:</span><span id="splash-reg">21/7654321EF</span></div>
-    <div><span>Exam Centre:</span><span id="splash-centre">CBT SIMULATOR</span></div>
-    <div><span>Subjects:</span><span>ENG · MATH · PHY · CHEM</span></div>
-    <div><span>Duration:</span><span>2 Hours (120 mins)</span></div>
-  </div>
-  <div class="instructions">
-    <strong>⚠ IMPORTANT INSTRUCTIONS</strong>
-    • This exam contains 60 questions across 4 subjects.<br>
-    • Each correct answer = 2.5 marks. Wrong = 0.<br>
-    • Use Previous / Next to navigate questions.<br>
-    • You may flag questions to review later.<br>
-    • Submit only when you are satisfied with your answers.
-  </div>
-  <button class="start-btn" onclick="startExam()">START EXAMINATION</button>
-</div>
-<div id="header" style="display:none">
-  <div class="h-logo">JAMB CBT</div>
-  <div class="h-subject" id="current-subject-header">ENGLISH LANGUAGE</div>
-  <div id="timer-box">
-    <div>
-      <div class="t-label">TIME LEFT</div>
-      <div id="timer-display">02:00:00</div>
-    </div>
-  </div>
-</div>
-<div id="subheader" style="display:none">
-  <button class="subject-tab active" onclick="jumpToSubject(0)">English</button>
-  <button class="subject-tab" onclick="jumpToSubject(1)">Mathematics</button>
-  <button class="subject-tab" onclick="jumpToSubject(2)">Physics</button>
-  <button class="subject-tab" onclick="jumpToSubject(3)">Chemistry</button>
-</div>
-<div id="main" style="display:none">
-  <div id="question-panel">
-    <div class="q-meta">
-      <div class="q-counter" id="q-counter">Question 1 of 60</div>
-      <div class="q-subject-badge" id="q-subject-badge">English Language</div>
-    </div>
-    <div class="question-card">
-      <div class="question-text" id="question-text">Loading...</div>
-      <ul class="options-list" id="options-list"></ul>
-    </div>
-    <div class="action-bar">
-      <button class="btn btn-prev" onclick="prevQuestion()">◀ Previous</button>
-      <button class="btn btn-flag" id="flag-btn" onclick="toggleFlag()">🚩 Flag</button>
-      <button class="btn btn-next" onclick="nextQuestion()">Next ▶</button>
-      <button class="btn btn-submit" onclick="showConfirm()">Submit Exam</button>
-    </div>
-  </div>
-  <div id="sidebar">
-    <div class="sidebar-title">Question Navigator</div>
-    <div class="legend">
-      <div class="legend-item"><div class="legend-dot" style="background:var(--answered)"></div> Answered</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--flagged)"></div> Flagged</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--unanswered)"></div> Not Answered</div>
-    </div>
-    <div class="q-grid" id="q-grid"></div>
-    <div class="sidebar-score">
-      <div>Answered: <span id="stat-answered">0</span></div>
-      <div>Flagged: <span id="stat-flagged">0</span></div>
-      <div>Remaining: <span id="stat-remaining">60</span></div>
-    </div>
-  </div>
-</div>
-<div id="confirm-overlay">
-  <div class="confirm-box">
-    <h3>Submit Examination?</h3>
-    <p id="confirm-msg">You still have unanswered questions. Are you sure you want to submit your exam?</p>
-    <div class="confirm-btns">
-      <button class="btn-cancel-confirm" onclick="hideConfirm()">Cancel</button>
-      <button class="btn-ok-confirm" onclick="submitExam()">Yes, Submit</button>
-    </div>
-  </div>
-</div>
-<div id="result-screen">
-  <div class="result-card">
-    <div class="r-logo">JAMB</div>
-    <h2>UTME Score Report</h2>
-    <div class="score-circle">
-      <div class="big-score" id="r-total">—</div>
-      <div class="score-label">TOTAL SCORE</div>
-    </div>
-    <div class="result-breakdown">
-      <div class="rb-item green">
-        <div class="rb-val" id="r-correct">0</div>
-        <div class="rb-lab">Correct</div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JAMB CBT Simulator</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="login-screen">
+      <div class="login-logo">
+        <h1>JAMB</h1>
+        <p>JOINT ADMISSIONS AND MATRICULATION BOARD</p>
       </div>
-      <div class="rb-item red">
-        <div class="rb-val" id="r-wrong">0</div>
-        <div class="rb-lab">Wrong</div>
+      <div class="login-subtitle">
+        UNIFIED TERTIARY MATRICULATION EXAMINATION — CBT
       </div>
-      <div class="rb-item">
-        <div class="rb-val" id="r-unanswered">0</div>
-        <div class="rb-lab">Unanswered</div>
+      <div class="login-card">
+        <h3 id="auth-title">Candidate Login</h3>
+        <div class="login-desc" id="auth-desc">
+          Enter your details to continue.
+        </div>
+        <div class="auth-toggle" role="tablist">
+          <button
+            type="button"
+            class="auth-toggle-btn active"
+            id="show-login-btn"
+            onclick="setAuthMode('login')"
+          >
+            Login
+          </button>
+          <button
+            type="button"
+            class="auth-toggle-btn"
+            id="show-register-btn"
+            onclick="setAuthMode('register')"
+          >
+            Register
+          </button>
+        </div>
+        <div class="login-error" id="login-error"></div>
+
+        <div id="login-form" class="auth-form">
+          <div class="form-group">
+            <label>Registration Number</label>
+            <input
+              type="text"
+              id="reg-input"
+              placeholder="e.g. 21/7654321EF"
+              maxlength="14"
+            />
+          </div>
+          <div class="form-group">
+            <label>Date of Birth</label>
+            <input type="date" id="dob-input" />
+          </div>
+        </div>
+
+        <div id="register-form" class="auth-form hidden">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="name-input" placeholder="e.g. Ada Okafor" />
+          </div>
+          <div class="form-group">
+            <label>Registration Number</label>
+            <input
+              type="text"
+              id="reg-register-input"
+              placeholder="e.g. 21/7654321EF"
+              maxlength="14"
+            />
+          </div>
+          <div class="form-group">
+            <label>Date of Birth</label>
+            <input type="date" id="dob-register-input" />
+          </div>
+          <div class="form-group">
+            <label>Exam Centre</label>
+            <input
+              type="text"
+              id="centre-register-input"
+              placeholder="e.g. Covenant CBT Centre, Lagos"
+            />
+          </div>
+        </div>
+
+        <button class="login-btn" id="auth-submit-btn" onclick="doLogin()">
+          LOGIN →
+        </button>
+        <div class="login-hint" id="login-hint">
+          <strong>Demo credentials:</strong><br />
+          Reg No: <strong>21/7654321EF</strong> &nbsp;|&nbsp; DOB:
+          <strong>2006-01-15</strong>
+        </div>
       </div>
-      <div class="rb-item">
-        <div class="rb-val" id="r-percent">0%</div>
-        <div class="rb-lab">Percentage</div>
+      <div class="login-footer">
+        JAMB CBT Simulator — For Practice Purposes Only
       </div>
     </div>
-    <div class="result-btns">
-      <button class="btn-review" onclick="reviewAnswers()">Review Answers</button>
-      <button class="btn-retry" onclick="location.reload()">Try Again</button>
+    <div id="splash" style="display: none">
+      <div class="logo-box">
+        <h1>JAMB</h1>
+        <p>JOINT ADMISSIONS AND MATRICULATION BOARD</p>
+      </div>
+      <h2>UNIFIED TERTIARY MATRICULATION EXAMINATION</h2>
+      <h3>Computer Based Test (CBT)</h3>
+      <div class="candidate-info">
+        <div>
+          <span>Candidate Name:</span
+          ><span id="splash-name">DEMO CANDIDATE</span>
+        </div>
+        <div>
+          <span>Registration No:</span><span id="splash-reg">21/7654321EF</span>
+        </div>
+        <div>
+          <span>Exam Centre:</span><span id="splash-centre">CBT SIMULATOR</span>
+        </div>
+        <div><span>Subjects:</span><span>ENG · MATH · PHY · CHEM</span></div>
+        <div><span>Duration:</span><span>2 Hours (120 mins)</span></div>
+      </div>
+      <div class="instructions">
+        <strong>⚠ IMPORTANT INSTRUCTIONS</strong>
+        • This exam contains 60 questions across 4 subjects.<br />
+        • Each correct answer = 2.5 marks. Wrong = 0.<br />
+        • Use Previous / Next to navigate questions.<br />
+        • You may flag questions to review later.<br />
+        • Submit only when you are satisfied with your answers.
+      </div>
+      <button class="start-btn" onclick="startExam()">START EXAMINATION</button>
     </div>
-  </div>
-</div>
-<script src="script.js"></script>
-</body>
+    <div id="header" style="display: none">
+      <div class="h-logo">JAMB CBT</div>
+      <div class="h-subject" id="current-subject-header">ENGLISH LANGUAGE</div>
+      <div id="timer-box">
+        <div>
+          <div class="t-label">TIME LEFT</div>
+          <div id="timer-display">02:00:00</div>
+        </div>
+      </div>
+    </div>
+    <div id="subheader" style="display: none">
+      <button class="subject-tab active" onclick="jumpToSubject(0)">
+        English
+      </button>
+      <button class="subject-tab" onclick="jumpToSubject(1)">
+        Mathematics
+      </button>
+      <button class="subject-tab" onclick="jumpToSubject(2)">Physics</button>
+      <button class="subject-tab" onclick="jumpToSubject(3)">Chemistry</button>
+    </div>
+    <div id="main" style="display: none">
+      <div id="question-panel">
+        <div class="q-meta">
+          <div class="q-counter" id="q-counter">Question 1 of 60</div>
+          <div class="q-subject-badge" id="q-subject-badge">
+            English Language
+          </div>
+        </div>
+        <div class="question-card">
+          <div class="question-text" id="question-text">Loading...</div>
+          <ul class="options-list" id="options-list"></ul>
+        </div>
+        <div class="action-bar">
+          <button class="btn btn-prev" onclick="prevQuestion()">
+            ◀ Previous
+          </button>
+          <button class="btn btn-flag" id="flag-btn" onclick="toggleFlag()">
+            🚩 Flag
+          </button>
+          <button class="btn btn-next" onclick="nextQuestion()">Next ▶</button>
+          <button class="btn btn-submit" onclick="showConfirm()">
+            Submit Exam
+          </button>
+        </div>
+      </div>
+      <div id="sidebar">
+        <div class="sidebar-title">Question Navigator</div>
+        <div class="legend">
+          <div class="legend-item">
+            <div class="legend-dot" style="background: var(--answered)"></div>
+            Answered
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background: var(--flagged)"></div>
+            Flagged
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background: var(--unanswered)"></div>
+            Not Answered
+          </div>
+        </div>
+        <div class="q-grid" id="q-grid"></div>
+        <div class="sidebar-score">
+          <div>Answered: <span id="stat-answered">0</span></div>
+          <div>Flagged: <span id="stat-flagged">0</span></div>
+          <div>Remaining: <span id="stat-remaining">60</span></div>
+        </div>
+      </div>
+    </div>
+    <div id="confirm-overlay">
+      <div class="confirm-box">
+        <h3>Submit Examination?</h3>
+        <p id="confirm-msg">
+          You still have unanswered questions. Are you sure you want to submit
+          your exam?
+        </p>
+        <div class="confirm-btns">
+          <button class="btn-cancel-confirm" onclick="hideConfirm()">
+            Cancel
+          </button>
+          <button class="btn-ok-confirm" onclick="submitExam()">
+            Yes, Submit
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="result-screen">
+      <div class="result-card">
+        <div class="r-logo">JAMB</div>
+        <h2>UTME Score Report</h2>
+        <div class="score-circle">
+          <div class="big-score" id="r-total">—</div>
+          <div class="score-label">TOTAL SCORE</div>
+        </div>
+        <div class="result-breakdown">
+          <div class="rb-item green">
+            <div class="rb-val" id="r-correct">0</div>
+            <div class="rb-lab">Correct</div>
+          </div>
+          <div class="rb-item red">
+            <div class="rb-val" id="r-wrong">0</div>
+            <div class="rb-lab">Wrong</div>
+          </div>
+          <div class="rb-item">
+            <div class="rb-val" id="r-unanswered">0</div>
+            <div class="rb-lab">Unanswered</div>
+          </div>
+          <div class="rb-item">
+            <div class="rb-val" id="r-percent">0%</div>
+            <div class="rb-lab">Percentage</div>
+          </div>
+        </div>
+        <div class="result-btns">
+          <button class="btn-review" onclick="reviewAnswers()">
+            Review Answers
+          </button>
+          <button class="btn-retry" onclick="location.reload()">
+            Try Again
+          </button>
+        </div>
+      </div>
+    </div>
+    <script src="main.js"></script>
+  </body>
 </html>
